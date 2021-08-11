@@ -3,7 +3,7 @@
   <Todo />
 </template>
 <script>
-import { ref } from 'vue';
+import { ref } from "vue";
 import Todo from "./components/Todo.vue";
 
 export default {
