@@ -1,16 +1,12 @@
 <template>
   <h1>{{ title }}</h1>
-  <Todo />
+  <router-view></router-view>
 </template>
 <script>
 import { ref } from "vue";
-import Todo from "./components/Todo.vue";
 
 export default {
   name: "App",
-  components: {
-    Todo,
-  },
   setup() {
     const title = ref("Bienvenidos al curso de Vue.js version 3");
 
