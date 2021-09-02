@@ -1,5 +1,12 @@
 import { createApp } from "vue";
+// import { Hello } from "./mixin";
 import App from "./App.vue";
 import router from "./router";
 
-createApp(App).use(router).mount("#app");
+const Vue = createApp(App);
+
+// // introduccion global
+// Vue.mixin(Hello);
+Vue.use(router);
+
+Vue.mount("#app");

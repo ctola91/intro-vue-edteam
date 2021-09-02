@@ -1,44 +1,51 @@
 <template>
-  <input type="text" v-model="newTask" @keyup.enter="addTask" />
-  <p v-if="isVisible">Este es un parrafo que quiero ocultar</p>
+  <!-- <input type="text" v-model="newTask" @keyup.enter="addTask" /> -->
+  <TodoForm @text="addTask" />
+  <!-- <p v-if="isVisible">Este es un parrafo que quiero ocultar</p>
   <p v-else>
     Este es el parrafo que quiero mostrar cuando el primero se oculta
-  </p>
-  <div class="flex space-between">
-    <p>Total de Tareas: {{ numberOfTasks }}</p>
-    <p>Tareas completadas: {{ tasksCompleted }}</p>
-    <p>Tareas incompletas: {{ pendingTasks }}</p>
-  </div>
+  </p> -->
+  <TodoInfo
+    :number-of-tasks="numberOfTasks"
+    :tasks-completed="tasksCompleted"
+    :pending-tasks="pendingTasks"
+  />
   <ul>
     <TodoItem
       :class="{ 'margin-15': isDesktop }"
       :task="task"
       v-for="task in tasks"
       :key="task.id"
-      :completeTask="completeTask"
+      :complete-task="completeTask"
+      :delete-task="deleteTask"
     />
   </ul>
 </template>
 <script>
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-  watchEffect,
-} from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { v4 as uuidv4 } from "uuid";
 import TodoItem from "./TodoItem.vue";
+import TodoForm from "./TodoForm.vue";
+import TodoInfo from "./TodoInfo.vue";
+import useTodo from "../composables/useTodo";
 
 export default {
   name: "Todo",
   components: {
     TodoItem,
+    TodoForm,
+    TodoInfo,
   },
   setup() {
-    const tasks = ref([]);
-    const newTask = ref("");
+    const {
+      tasks,
+      deleteTask,
+      completeTask,
+      addTask,
+      numberOfTasks,
+      tasksCompleted,
+      pendingTasks,
+    } = useTodo();
 
     // lifecycle
     onMounted(() => {
@@ -73,55 +80,54 @@ export default {
     });
 
     // methods
-    const addTask = () => {
-      tasks.value.push({
-        id: uuidv4(),
-        task: newTask.value,
-        isCompleted: false,
-      });
-      newTask.value = "";
-    };
+    // const completeTask = (task) => {
+    //   //let taskSelected = tasks.value.filter(t => t.id === task.id);
+    //   task.isCompleted = true;
+    // };
 
-    const completeTask = (task) => {
-      //let taskSelected = tasks.value.filter(t => t.id === task.id);
-      task.isCompleted = true;
-    };
+    // const addTask = ({ inputText }) => {
+    //   console.log(inputText.value);
+    //   tasks.value.push({
+    //     id: uuidv4(),
+    //     task: inputText.value,
+    //     isCompleted: false,
+    //   });
+    // };
+    // const deleteTask = (taskRemoved) => {
+    //   const filteredTasks = tasks.value.filter((task) => {
+    //     return task.id !== taskRemoved.id;
+    //   });
+    //   console.log(filteredTasks);
+    //   tasks.value = filteredTasks;
+    // };
 
     // computed properties
-    const numberOfTasks = computed(() => {
-      return tasks.value.length;
-    });
+    // const numberOfTasks = computed(() => {
+    //   return tasks.value.length;
+    // });
 
-    const tasksCompleted = computed(() => {
-      const completedTasks = tasks.value.filter((task) => {
-        return task.isCompleted === true;
-      });
-      return completedTasks.length;
-    });
+    // const tasksCompleted = computed(() => {
+    //   const completedTasks = tasks.value.filter((task) => {
+    //     return task.isCompleted === true;
+    //   });
+    //   return completedTasks.length;
+    // });
 
-    const pendingTasks = computed(() => {
-      const pending = tasks.value.filter((task) => {
-        return task.isCompleted === false;
-      });
-      return pending.length;
-    });
-
-    // watchers
-    watchEffect(() => console.log(tasks.value));
-
-    watch(newTask, (current, prev) => {
-      console.log(current);
-      console.log(prev);
-    });
+    // const pendingTasks = computed(() => {
+    //   const pending = tasks.value.filter((task) => {
+    //     return task.isCompleted === false;
+    //   });
+    //   return pending.length;
+    // });
 
     return {
       tasks,
-      newTask,
       numberOfTasks,
       tasksCompleted,
       pendingTasks,
       addTask,
       completeTask,
+      deleteTask,
       isVisible: ref(true),
       activeColor: ref("#fff"),
       background: ref("green"),
@@ -139,5 +145,8 @@ export default {
 }
 .space-between {
   justify-content: space-between;
+}
+.align-center {
+  align-items: center;
 }
 </style>
